@@ -5,8 +5,8 @@ const crypto = require('crypto');
 const db = require('../config/connectDB.js');
 
 
-// registering user
-const register = async (req, res) => {
+// signup user
+const signup = async (req, res) => {
     // getting user info.
     const { username, email, password } = req.body;
     // console.log("User Data: ", username, email, password);
@@ -36,6 +36,7 @@ const register = async (req, res) => {
                     }
                     res.json({
                         // response after the user created
+                        success: true,
                         message: 'User created successfully',
                         data: result2
                     });
@@ -51,14 +52,14 @@ const register = async (req, res) => {
 }
 // registered user can access their account
 const login = async (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
-    if (!username || !password) {
+    if (!email || !password) {
         return res.status(400).json({ message: 'Email and password are required' });
     }
 
-    const query1 = 'SELECT * FROM users WHERE username = ?';
-    db.query(query1, [username], async (err, result) => {
+    const query1 = 'SELECT * FROM users WHERE email = ?';
+    db.query(query1, [email], async (err, result) => {
         if (err) {
             return res.json({ message: 'Database error', error: err.message })
         }
@@ -74,17 +75,14 @@ const login = async (req, res) => {
                 return res.json({ message: 'Invalid password' });
             }
             const token = jwt.sign(
-                { userId: user.id, password: unHashPassword },
+                { userId: user.id },
                 process.env.JWT_SECRET,
                 { expiresIn: '1h' }
             );
             res.json({
+                success: true,
                 message: "Login successful",
                 token: token,
-                user: {
-                    username: user.username,
-                    email: user.email
-                }
             })
 
         })
@@ -93,6 +91,6 @@ const login = async (req, res) => {
 
 
 module.exports = {
-    register,
+    signup,
     login
 }

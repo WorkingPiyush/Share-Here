@@ -57,47 +57,10 @@
             background: #4338ca;
         }
 
-        .main-Section {
-            max-width: 900px;
-            margin: 133px auto;
+        .content {
+            max-width: 500px;
+            margin: 60px auto;
             padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .card {
-            flex: 1 1 250px;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
-
-        .card h2 {
-            margin-bottom: 10px;
-        }
-
-        .card p {
-            color: #555;
-            font-size: 14px;
-        }
-
-        .card a {
-            text-decoration: none;
-        }
-
-        .card a:visited {
-            text-decoration: none;
-            color: #4f46e5;
         }
 
         h2 {
@@ -133,37 +96,24 @@
     <header>
         <h1 class="headIcon">Share-Here</h1>
         <div class="header-buttons">
-            <!-- to added is any this is needed -->
+            <a href="/login"><button class="btn-login">Log In</button></a>
+            <a href="/signup"><button class="btn-signup">Sign Up</button></a>
         </div>
     </header>
 
-    <div class="main-Section">
-        <div class="card">
-            <!-- image card -->
-            <h2><a href="/images">Images</a></h2>
-            <p>Upload your images (JPEG, PNG, GIF) here or click to select.</p>
-        </div>
-        <div class="card">
-            <!-- document card -->
-            <h2><a href="/documents">Documents</a></h2>
-            <p>Upload your documents (PDF, DOC, DOCX) here or click to select.</p>
-        </div>
-        <div class="card">
-            <!-- videos card -->
-            <h2><a href="/videos">Videos</a></h2>
-            <p>Upload your videos (MP4, MOV, AVI) here or click to select.</p>
-        </div>
+    <div class="content">
+        <!-- about the app -->
+        <h2>Welcome to Share-Here</h2>
+        <p>A simple and secure way to manage your files:</p>
+        <ul>
+            <li>🔒 Store files securely with encryption</li>
+            <li>📂 Organize your documents easily</li>
+            <li>🌍 Access files anywhere, anytime</li>
+            <li>🤝 Share with friends or team securely</li>
+        </ul>
+        <footer>©
+            <script>document.write(new Date().getFullYear())</script> Share-Here. All rights reserved.
+        </footer>
     </div>
-    <footer>©
-        <script>document.write(new Date().getFullYear())</script> Share-Here. All rights reserved.
-    </footer>
 </body>
-<script>
-    // checking if there is any token in local storage
-    const token = localStorage.getItem('token');
-    if (!token) {
-        window.location.href = '/login';
-    }
-</script>
-
 </html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Share-Here - Signup</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f9fafb;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      color: #4f46e5;
+      font-size: 20px;
+      margin: 0;
+    }
+
+    .header-buttons button {
+      margin-left: 10px;
+      padding: 8px 14px;
+      border-radius: 5px;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-login {
+      background: transparent;
+      border: 1px solid #4f46e5;
+      color: #4f46e5;
+    }
+
+    .btn-login:hover {
+      background: #eef2ff;
+    }
+
+    .btn-signup {
+      background: #4f46e5;
+      color: #fff;
+    }
+
+    .btn-signup:hover {
+      background: #4338ca;
+    }
+
+    .content {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .signup-box {
+      background: #fff;
+      padding: 30px 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 350px;
+      text-align: center;
+    }
+
+    .signup-box h2 {
+      color: #4f46e5;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    input {
+      width: 92%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    button.submit-btn {
+      width: 100%;
+      padding: 10px;
+      margin-top: 15px;
+      background: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    button.submit-btn:hover {
+      background: #4338ca;
+    }
+
+    p {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    a {
+      color: #4f46e5;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      font-size: 14px;
+      color: #666;
+      background: #f3f4f6;
+    }
+
+    .headIcon a {
+      text-decoration: none;
+    }
+
+    .headIcon a:visited {
+      text-decoration: none;
+      color: #4f46e5;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1 class="headIcon"><a href="/">Share-Here</a></h1>
+    <div class="header-buttons">
+      <a href="/login"><button class="btn-login">Log In</button></a>
+    </div>
+  </header>
+
+  <div class="content">
+    <div class="signup-box">
+      <h2>Create Account</h2>
+      <form id="signupForm">
+        <input type="text" name="username" id="name" placeholder="Enter your full name" required autocomplete="name">
+        <input type="email" name="email" id="email" placeholder="Enter your email" required autocomplete="email">
+        <input type="password" name="password" id="password" placeholder="Enter your password" required
+          autocomplete="new-password">
+        <input type="password" name="confirm_password" id="password_confirm" placeholder="Confirm Password" required
+          autocomplete="new-password">
+
+        <div id="msg" style="color:red; font-size:14px; margin:5px 0;"></div>
+        <button type="submit" class="submit-btn">Sign Up</button>
+      </form>
+
+      <p>Already have an account? <a href="/login">Log in</a></p>
+    </div>
+  </div>
+
+  <footer>
+    ©
+    <script>document.write(new Date().getFullYear())</script> Share-Here. All rights reserved.
+  </footer>
+
+  <script>
+    const form = document.getElementById("signupForm");
+    const password = document.getElementById("password");
+    const confirm = document.getElementById("password_confirm");
+    const msg = document.getElementById("msg");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      // checking the password and confirm password section for the same input value
+      if (password.value !== confirm.value) {
+        e.preventDefault();
+        // response for the wrong password
+        msg.textContent = "Passwords do not match!";
+      } else {
+        msg.textContent = "";
+        // else this will happend
+        let userInfo = {
+          username: e.target.username.value.trim(),
+          email: e.target.email.value.trim(),
+          password: e.target.password.value.trim(),
+        };
+        // calling the api
+        const res = await fetch('/users/signup', {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(userInfo),
+        })
+        // getting the data
+        const data = await res.json();
+        // console.log(data)
+
+        if (data.success) {
+          alert(data.message);
+          window.location.href = "/login";
+        } else {
+          alert("Registration failed: " + data.message);
+        }
+
+      }
+    });
+  </script>
+</body>
+
+</html>
