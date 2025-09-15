@@ -19,7 +19,7 @@ const docFilter = (req, file, cb) => {
     if (allowedExt.includes(ext)) {
         cb(null, true)
     } else {
-        cb(new Error("Only Pdfs and Images are allowed!!"))
+        cb(new Error("Only Documents are allowed!!"))
     }
 };
 const imgStorage = multer.diskStorage({
@@ -39,7 +39,7 @@ const imgFilter = (req, file, cb) => {
     if (allowedExt.includes(ext)) {
         cb(null, true)
     } else {
-        cb(new Error("Only image files are allowed!"));
+        cb(new Error("Only images are allowed!"));
     }
 };
 const Vdostorage = multer.diskStorage({

@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
+const handleUploadError = require('../middleware/fileErrorMiddleware.js');
 
 const { uploadFile } = require('../controllers/fileController');
 const router = express.Router();
@@ -13,11 +14,11 @@ const imgMiddleware = multer({ storage: imgStorage, fileFilter: imgFilter, limit
 const VdoMiddleware = multer({ storage: Vdostorage, fileFilter: VdoFilter, limits: { fileSize: 1073741824 } });
 
 // for documents only
-router.post('/uploadDoc', docMiddleware.array('files'), uploadFile)
+router.post('/uploadDoc', handleUploadError(docMiddleware.array('files')), uploadFile)
 // for images only
-router.post('/uploadImg', imgMiddleware.array('files',), uploadFile)
+router.post('/uploadImg', handleUploadError(imgMiddleware.array('files')), uploadFile)
 // for videos only
-router.post('/uploadVdo', VdoMiddleware.array('files',), uploadFile)
+router.post('/uploadVdo', handleUploadError(VdoMiddleware.array('files')), uploadFile)
 
 
 module.exports = router;

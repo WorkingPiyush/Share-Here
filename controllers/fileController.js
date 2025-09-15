@@ -14,11 +14,12 @@ const uploadFile = (req, res) => {
     // confirmation of file upload
     if (req.files) {
         res.json({
+            success: true,
             message: "Files uploaded successfully!",
             files: req.files
         });
     } else {
-        res.status(400).json({ message: "Files uploaded unsuccessfull!" })
+        res.json({ message: "Files uploaded unsuccessful!" })
     }
 };
 

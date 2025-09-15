@@ -21,6 +21,9 @@ app.get('/', (req, res) => {
 app.use("/signup", express.static(path.join(__dirname, 'public', '/signup.html')))
 app.use("/login", express.static(path.join(__dirname, 'public', '/login.html')))
 app.use("/home", express.static(path.join(__dirname, 'public', '/homePage.html')))
+app.use("/images", express.static(path.join(__dirname, 'public', '/imageWorking.html')))
+app.use("/documents", express.static(path.join(__dirname, 'public', '/docWorking.html')))
+app.use("/videos", express.static(path.join(__dirname, 'public', '/videoWorking.html')))
 
 // file working route
 const fileRoutes = require('./routes/fileRoutes.js')
@@ -28,8 +31,6 @@ app.use('/api/', fileRoutes)
 // auth working route
 const authRoutes = require('./routes/authRoutes.js')
 app.use('/users/', authRoutes)
-
-
 
 
 
