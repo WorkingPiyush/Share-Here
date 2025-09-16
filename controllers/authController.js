@@ -67,15 +67,13 @@ const login = async (req, res) => {
             return res.json({ message: 'User not found' })
         }
         const user = result[0];
-        const unHashPassword = await bcrypt.compare(password, user.password, (err, isMatch) => {
-            if (err) {
-                return res.json({ message: "Error while comparing password !!" });
-            }
+        try {
+            const isMatch = await bcrypt.compare(password, user.password)
             if (!isMatch) {
                 return res.json({ message: 'Invalid password' });
             }
             const token = jwt.sign(
-                { userId: user.id },
+                { userId: user.User_id },
                 process.env.JWT_SECRET,
                 { expiresIn: '1h' }
             );
@@ -83,10 +81,12 @@ const login = async (req, res) => {
                 success: true,
                 message: "Login successful",
                 token: token,
+                user: user
             })
-
-        })
-    })
+        } catch (error) {
+            res.status(500).json({ message: "Something went wrong" });
+        }
+    });
 }
 
 

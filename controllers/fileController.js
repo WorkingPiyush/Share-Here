@@ -1,9 +1,13 @@
 // let's Work !!
+const db = require('../config/connectDB.js')
 const uploadFile = (req, res) => {
     // collecting user's files
     if (!req.files || req.files.length === 0) {
         return res.status(400).json({ error: "No file uploaded" });
     }
+    //   const userID = req.userId
+    //   console.log(userID)
+
     // the limit of for uploading a file is 1GB.
     const maxSize = 1073741824;
     const tooLarge = req.files.find(f => f.size > maxSize);
@@ -18,6 +22,7 @@ const uploadFile = (req, res) => {
             message: "Files uploaded successfully!",
             files: req.files
         });
+        
     } else {
         res.json({ message: "Files uploaded unsuccessful!" })
     }
