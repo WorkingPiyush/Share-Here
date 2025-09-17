@@ -28,7 +28,7 @@ const signup = async (req, res) => {
                 // hasing the password of the user b4 storing in DB
                 const query2 = 'INSERT INTO users (User_ID,username, email,password) VALUES (?, ?, ?, ?)';
                 const values2 = [userid, username, email, hashPassword];
-                console.log(values2)
+                // console.log(values2)
                 db.query(query2, values2, (err, result2) => {
                     if (err) {
                         console.error(err);
@@ -72,8 +72,13 @@ const login = async (req, res) => {
             if (!isMatch) {
                 return res.json({ message: 'Invalid password' });
             }
+            const payload = {
+                user: {
+                    id: user.User_id
+                }
+            };
             const token = jwt.sign(
-                { userId: user.User_id },
+                payload,
                 process.env.JWT_SECRET,
                 { expiresIn: '1h' }
             );
@@ -81,7 +86,7 @@ const login = async (req, res) => {
                 success: true,
                 message: "Login successful",
                 token: token,
-                user: user
+                user_id: user.User_id
             })
         } catch (error) {
             res.status(500).json({ message: "Something went wrong" });

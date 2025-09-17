@@ -8,7 +8,7 @@ const checkUser = async (req, res, next) => {
         }
         const token = authHeader.split(" ")[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        console.log(decoded)
+        // console.log(decoded.user.id)
         if (decoded) {
             req.user = decoded.user;
         } else {
