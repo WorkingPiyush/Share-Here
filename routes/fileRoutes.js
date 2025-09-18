@@ -3,7 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const handleUploadError = require('../middleware/fileErrorMiddleware.js');
 
-const { uploadFile } = require('../controllers/fileController');
+const { uploadFile, userFiles } = require('../controllers/fileController');
 const router = express.Router();
 const { docStorage, docFilter, imgStorage, imgFilter, Vdostorage, VdoFilter } = require('../storageSetup.js')
 
@@ -20,5 +20,6 @@ router.post('/uploadImg', handleUploadError(imgMiddleware.array('files')), uploa
 // for videos only
 router.post('/uploadVdo', handleUploadError(VdoMiddleware.array('files')), uploadFile)
 
+router.get('/getFiles', userFiles)
 
 module.exports = router;
