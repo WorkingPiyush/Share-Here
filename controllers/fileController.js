@@ -1,5 +1,6 @@
 // let's Work !!
-const db = require('../config/connectDB.js')
+const path = require('path');
+const db = require('../config/connectDB.js');
 
 const uploadFile = (req, res) => {
     // collecting user's files
@@ -57,7 +58,7 @@ const userFiles = (req, res) => {
             if (err) {
                 res.json({ message: "DB Error", err })
             }
-            console.log(result2)
+            // console.log(result2)
             res.json(result2)
         })
     } catch (error) {
@@ -66,7 +67,33 @@ const userFiles = (req, res) => {
     }
 }
 
+const downloadFiles = (req, res) => {
+    const fileName = req.params.file;
+    console.log("file name", fileName)
+
+    const query2 = ("SELECT * FROM Userfiles WHERE filename = ?");
+    const value2 = [fileName];
+    db.query(query2, value2, (err, result3) => {
+        if (err) {
+            res.json({ message: "DB Error", err })
+        }
+        if (result3.length === 0) {
+            res.json({ message: "File Not Found" })
+        }
+        const file = result3[0];
+        const directory = path.join(process.env.BASE_PATH, "BACKEND PROJECTS", "SHARE HERE", file.filepath)
+        // const file_path = path.join(process.env.BASE_PATH + file.filepath)
+        res.download(directory, file.filename, (err) => {
+            if (err) {
+                console.error("Download error:", err);
+                res.send("File not found on server");
+            }
+            console.log("File Downloading..")
+        })
+    })
+}
 module.exports = {
     uploadFile,
-    userFiles
+    userFiles,
+    downloadFiles
 };

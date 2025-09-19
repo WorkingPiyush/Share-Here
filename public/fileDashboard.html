@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Info Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: #fff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            color: #4f46e5;
+            font-size: 20px;
+            margin: 0;
+        }
+
+        header a {
+            text-decoration: none;
+        }
+
+        header a:visited {
+            color: #4f46e5;
+            font-size: 20px;
+            margin: 0;
+            text-decoration: none;
+        }
+
+        .header-buttons button {
+            margin-left: 10px;
+            padding: 8px 14px;
+            border-radius: 5px;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .container {
+            max-width: 1070px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 20px;
+            color: #444;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th,
+        table td {
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table th {
+            background: #f1f3f6;
+            font-weight: bold;
+        }
+
+        table tr:hover {
+            background: #f9fafc;
+        }
+
+        .file-actions button {
+            padding: 6px 12px;
+            margin-right: 8px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-download {
+            background: #4A90E2;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-copy {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .btn-download:hover {
+            background: #357ABD;
+        }
+
+        .btn-delete:hover {
+            background: #c0392b;
+        }
+
+        .btn-copy:hover {
+            background: #27ae60;
+        }
+
+        /* small popup when copied */
+        .copy-toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #2ecc71;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            display: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1 class="headIcon"><a href="/home">Share-Here</a></h1>
+        <h1>📂 File Info Dashboard</h1>
+        <div class="header-buttons">
+            <!-- to added this is needed -->
+        </div>
+    </header>
+    <!-- <header></header> -->
+
+    <div class="container">
+        <h2>Uploaded Files</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>File Name</th>
+                    <th>Size</th>
+                    <th>Type</th>
+                    <th>Uploaded On</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="fileTableBody">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="copy-toast" id="copyToast">✅ Link Copied!</div>
+
+    <script>
+        async function loadFiles() {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                res.status(404).json({ message: "Please login first !!" })
+                window.location.href = "/login";
+            }
+
+            const res = await fetch('/api/getFiles', {
+                method: "GET",
+                headers: { "Authorization": "Bearer " + token, }
+            })
+            const data = await res.json();
+            function fileSize(filesize) {
+                if (filesize === 0) {
+                    return "0 Bytes";
+                }
+                const units = ["Bytes", "KB", "MB", "GB"];
+                const i = Math.floor(Math.log(filesize) / Math.log(1024));
+                return (filesize / Math.pow(1024, i)).toFixed(2) + " " + units[i]
+            }
+            const Tablebody = document.getElementById('fileTableBody');
+            Tablebody.innerHTML = "";
+            try {
+                for (let i = 0; i < data.length; i++) {
+                    const file = data[i];
+                    const rowEntries = document.createElement('tr');
+                    rowEntries.innerHTML = `
+            <td>${file.filename}</td>
+            <td>${fileSize(file.size)}</td>
+            <td>${file.type.split('/')[1].toUpperCase()}</td>
+            <td>${new Date(file.uploaded_at).toLocaleString()}</td>
+            <td class="file-actions">
+            <button class="btn-download">Download</button>
+            <button class="btn-delete">Delete</button>
+            <button class="btn-copy" data-link="https://yourserver.com/download/report.pdf">CopyLink</button></td>`;
+                    Tablebody.appendChild(rowEntries);
+                    console.log(rowEntries)
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        loadFiles()
+    </script>
+
+</body>
+
+</html>
