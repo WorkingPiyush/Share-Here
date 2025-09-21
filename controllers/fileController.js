@@ -1,6 +1,8 @@
 // let's Work !!
 const path = require('path');
+const fs = require('fs');
 const db = require('../config/connectDB.js');
+const dotenv = require('dotenv').config();
 
 const uploadFile = (req, res) => {
     // collecting user's files
@@ -23,13 +25,12 @@ const uploadFile = (req, res) => {
             res.json({
                 success: true,
                 message: "Files uploaded successfully!",
-                files: req.files
             });
             const userID = req.user.id
             let files = req.files
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
-                // console.log(files)
+                // console.log(file)
                 const query = 'INSERT INTO Userfiles (size, type, User_id, filename, filepath) VALUES (?, ?, ?,?,?)';
                 const value = [file.size, file.mimetype, userID, file.filename, file.path]
                 db.query(query, value, (err, result) => {
@@ -68,12 +69,9 @@ const userFiles = (req, res) => {
 }
 
 const downloadFiles = (req, res) => {
-    const fileName = req.params.file;
-    console.log("file name", fileName)
-
-    const query2 = ("SELECT * FROM Userfiles WHERE filename = ?");
-    const value2 = [fileName];
-    db.query(query2, value2, (err, result3) => {
+    const fileId = req.params.id;
+    const query2 = ("SELECT * FROM Userfiles WHERE id = ?");
+    db.query(query2, fileId, (err, result3) => {
         if (err) {
             res.json({ message: "DB Error", err })
         }
@@ -81,19 +79,46 @@ const downloadFiles = (req, res) => {
             res.json({ message: "File Not Found" })
         }
         const file = result3[0];
-        const directory = path.join(process.env.BASE_PATH, "BACKEND PROJECTS", "SHARE HERE", file.filepath)
-        // const file_path = path.join(process.env.BASE_PATH + file.filepath)
-        res.download(directory, file.filename, (err) => {
+        const filepath = path.resolve(process.env.BASE_PATH, file.filepath)
+        // console.log("BASE_PATH",process.env.BASE_PATH)
+        // console.log("file.filepath",file.filepath)
+        console.log("Resolved File Path: ", filepath)
+        if (!fs.existsSync(filepath)) {
+            console.error("File not found at:", filepath);
+            return res.status(404).send("File not found on server");
+        }
+        res.download(filepath, file.filename, (err) => {
             if (err) {
-                console.error("Download error:", err);
-                res.send("File not found on server");
+                console.error("Download error:", err.message);
+                return res.send("File not found on server");
             }
             console.log("File Downloading..")
         })
     })
 }
+
+const deleteFile = (req, res) => {
+    const fileId = req.params.id;
+    const query3 = "DELETE FROM Userfiles WHERE id = ?"
+
+    db.query(query3, fileId, (err, result4) => {
+        if (err) {
+            res.json({ message: "DB Error", err })
+        }
+        if (result4.length === 0) {
+            res.json({ message: "File Not Found" })
+        }
+        res.json({
+            message: 'Your Selected file deleted'
+        })
+    })
+
+}
+
+
 module.exports = {
     uploadFile,
     userFiles,
-    downloadFiles
+    downloadFiles,
+    deleteFile
 };

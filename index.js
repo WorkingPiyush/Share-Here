@@ -4,7 +4,7 @@ const dotenv = require('dotenv').config();
 const path = require('path');
 const PORT = process.env.PORT || 2001;
 const db = require('./config/connectDB.js')
-const checkUser = require('./middleware/checkUserMiddleware.js');
+
 
 app.use(express.static(__dirname + '/public'))
 app.use(express.json());
@@ -29,7 +29,7 @@ app.use("/myfiles", express.static(path.join(__dirname, 'public', '/fileDashboar
 
 // file working route
 const fileRoutes = require('./routes/fileRoutes.js')
-app.use('/api/', checkUser, fileRoutes)
+app.use('/api/', fileRoutes)
 // auth working route
 const authRoutes = require('./routes/authRoutes.js')
 app.use('/users/', authRoutes)

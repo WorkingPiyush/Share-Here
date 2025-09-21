@@ -149,7 +149,7 @@
     <!-- <header></header> -->
 
     <div class="container">
-        <h2>Uploaded Files</h2>
+        <h2 id="responseTxt">Uploaded Files</h2>
         <table>
             <thead>
                 <tr>
@@ -160,6 +160,7 @@
                     <th>Actions</th>
                 </tr>
             </thead>
+            <div id="midSec"></div>
             <tbody id="fileTableBody">
             </tbody>
         </table>
@@ -168,18 +169,23 @@
     <div class="copy-toast" id="copyToast">✅ Link Copied!</div>
 
     <script>
-        async function loadFiles() {
-            const token = localStorage.getItem("token");
-            if (!token) {
-                res.status(404).json({ message: "Please login first !!" })
-                window.location.href = "/login";
-            }
+        const token = localStorage.getItem("token");
+        if (!token) {
+            console.log("Please login first !!")
+            window.location.href = "/login";
+        }
 
-            const res = await fetch('/api/getFiles', {
+        async function loadData() {
+            const res = fetch('/api/getFiles', {
                 method: "GET",
                 headers: { "Authorization": "Bearer " + token, }
             })
-            const data = await res.json();
+            return await res.json()
+        }
+
+
+
+        async function loadFiles() {
             function fileSize(filesize) {
                 if (filesize === 0) {
                     return "0 Bytes";
@@ -188,27 +194,56 @@
                 const i = Math.floor(Math.log(filesize) / Math.log(1024));
                 return (filesize / Math.pow(1024, i)).toFixed(2) + " " + units[i]
             }
-            const Tablebody = document.getElementById('fileTableBody');
-            Tablebody.innerHTML = "";
-            try {
-                for (let i = 0; i < data.length; i++) {
-                    const file = data[i];
-                    const rowEntries = document.createElement('tr');
-                    rowEntries.innerHTML = `
+            console.log(data)
+            if (data.length === 0) {
+                document.getElementById("responseTxt").innerText = "No files uploaded yet.";
+                let head = document.querySelector('Table')
+                head.remove();
+            } else {
+                const Tablebody = document.getElementById('fileTableBody');
+                Tablebody.innerHTML = "";
+                try {
+                    for (let i = 0; i < data.length; i++) {
+                        const file = data[i];
+                        const deleteLink = `/api/delete/${file.id}`;
+                        const downloadLink = `/api/downloadFiles/${file.id}`
+                        const rowEntries = document.createElement('tr');
+                        rowEntries.innerHTML = `
             <td>${file.filename}</td>
             <td>${fileSize(file.size)}</td>
             <td>${file.type.split('/')[1].toUpperCase()}</td>
             <td>${new Date(file.uploaded_at).toLocaleString()}</td>
             <td class="file-actions">
-            <button class="btn-download">Download</button>
-            <button class="btn-delete">Delete</button>
-            <button class="btn-copy" data-link="https://yourserver.com/download/report.pdf">CopyLink</button></td>`;
-                    Tablebody.appendChild(rowEntries);
-                    console.log(rowEntries)
+            <a href = "${downloadLink}" ><button class="btn-download">Download</button></a>
+            <a href = "${deleteWork}"><button class="btn-delete">Delete</button></a>
+            <button class="btn-copy" data-link = "http://localhost:2001${downloadLink}">CopyLink</button>
+            </td>`;
+                        Tablebody.appendChild(rowEntries);
+
+
+                        const toast = document.getElementById("copyToast");
+                        document.addEventListener("click", (e) => {
+                            if (e.target.classList.contains("btn-copy")) {
+                                const link = e.target.getAttribute("data-link");
+                                navigator.clipboard.writeText(link).then(() => {
+                                    toast.style.display = "block";
+                                    setTimeout(() => toast.style.display = "none", 2000)
+                                })
+                            }
+                        })
+                    }
+                } catch (error) {
+                    console.log(error)
                 }
-            } catch (error) {
-                console.log(error)
             }
+        }
+        async function deleteWork() {
+            document.getElementsByClassName("btn-delete").addEventListener('click', async () => {
+                if (window.confirm("Bro!, Are you sure")) {
+                    let fileId = data.id
+                    console.log(fileId)
+                }
+            })
         }
         loadFiles()
     </script>
