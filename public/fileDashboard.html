@@ -174,14 +174,19 @@
             console.log("Please login first !!")
             window.location.href = "/login";
         }
-
+        let workingData;
         async function loadData() {
-            const res = fetch('/api/getFiles', {
+            const res = await fetch('/api/getFiles', {
                 method: "GET",
                 headers: { "Authorization": "Bearer " + token, }
             })
-            return await res.json()
+            if (!res.ok) {
+                throw new Error("Failed to load data !")
+            }
+            return await res.json();
+
         }
+        workingData = loadData()
 
 
 
@@ -194,6 +199,7 @@
                 const i = Math.floor(Math.log(filesize) / Math.log(1024));
                 return (filesize / Math.pow(1024, i)).toFixed(2) + " " + units[i]
             }
+            let data = await workingData
             console.log(data)
             if (data.length === 0) {
                 document.getElementById("responseTxt").innerText = "No files uploaded yet.";
@@ -204,8 +210,7 @@
                 Tablebody.innerHTML = "";
                 try {
                     for (let i = 0; i < data.length; i++) {
-                        const file = data[i];
-                        const deleteLink = `/api/delete/${file.id}`;
+                        const file = data[i]
                         const downloadLink = `/api/downloadFiles/${file.id}`
                         const rowEntries = document.createElement('tr');
                         rowEntries.innerHTML = `
@@ -215,7 +220,7 @@
             <td>${new Date(file.uploaded_at).toLocaleString()}</td>
             <td class="file-actions">
             <a href = "${downloadLink}" ><button class="btn-download">Download</button></a>
-            <a href = "${deleteWork}"><button class="btn-delete">Delete</button></a>
+            <button class="btn-delete" onclick="deleteWork(${file.id})">Delete</button>
             <button class="btn-copy" data-link = "http://localhost:2001${downloadLink}">CopyLink</button>
             </td>`;
                         Tablebody.appendChild(rowEntries);
@@ -237,14 +242,21 @@
                 }
             }
         }
-        async function deleteWork() {
-            document.getElementsByClassName("btn-delete").addEventListener('click', async () => {
-                if (window.confirm("Bro!, Are you sure")) {
-                    let fileId = data.id
-                    console.log(fileId)
-                }
+        async function deleteWork(id) {
+            let fileId = id;
+            const res = await fetch(`/api/delete/${fileId}`, {
+                method: "DELETE",
+                headers: { "Authorization": "Bearer " + token, }
             })
+            console.log(fileId)
+            if (!res.ok) {
+                console.log("err", await res.json())
+            } else {
+                alert("Work Done")
+                window.location.href = "/myfiles"
+            }
         }
+
         loadFiles()
     </script>
 

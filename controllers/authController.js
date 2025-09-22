@@ -94,8 +94,32 @@ const login = async (req, res) => {
     });
 }
 
+const logout = async (req, res) => {
+    const authHeader = req.header('Authorization');
+    if (!authHeader) return res.json({ message: "Token is missing !!" })
+    try {
+        const token = authHeader.split(' ')[1];
+        const decodedToken = jwt.decode(token);
+        const userid = decodedToken.user.id
+        if (!decodedToken || !decodedToken.exp) {
+            return res.json({ message: "Invalid token" });
+        }
+        // adding the token in DB
+        const query1 = 'INSERT INTO exptoken (token,User_id) VALUES (?, ?)';
+        const values1 = [token, userid];
+        db.query(query1, values1, async (err, result1) => {
+            if (err) {
+                res.json({ message: 'Database error', error: err.message })
+            }
+            res.json({ message: "Logout Successfully !!", result1 })
+        })
+    } catch (error) {
+        res.status(500).json({ message: "Something went wrong" });
+    }
+}
 
 module.exports = {
     signup,
-    login
+    login,
+    logout
 }
