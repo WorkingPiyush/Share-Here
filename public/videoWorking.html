@@ -119,6 +119,22 @@
             background: #3831bf;
         }
 
+        #btn-logout {
+            background-color: rgb(255, 9, 9);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
         footer {
             margin-top: 40px;
             font-size: 14px;
@@ -131,7 +147,8 @@
     <header>
         <h1 class="headIcon"><a href="/home">Share-Here</a></h1>
         <div class="header-buttons">
-            <!-- to added this is needed -->
+            <button><a href="/myfiles">My Files</a></button>
+            <a id="btn-logout" href="/logout">Logout</a>
         </div>
     </header>
 

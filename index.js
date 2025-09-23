@@ -19,13 +19,14 @@ app.get('/', (req, res) => {
 })
 
 // working on the routes 
-app.use("/signup", express.static(path.join(__dirname, 'public', '/signup.html')))
-app.use("/login", express.static(path.join(__dirname, 'public', '/login.html')))
 app.use("/home", express.static(path.join(__dirname, 'public', '/homePage.html')))
 app.use("/images", express.static(path.join(__dirname, 'public', '/imageWorking.html')))
+app.use("/signup", express.static(path.join(__dirname, 'public', '/signup.html')))
+app.use("/login", express.static(path.join(__dirname, 'public', '/login.html')))
 app.use("/documents", express.static(path.join(__dirname, 'public', '/docWorking.html')))
 app.use("/videos", express.static(path.join(__dirname, 'public', '/videoWorking.html')))
 app.use("/myfiles", express.static(path.join(__dirname, 'public', '/fileDashboard.html')))
+app.use("/logout", express.static(path.join(__dirname, 'public', '/logout.html')))
 
 // file working route
 const fileRoutes = require('./routes/fileRoutes.js')

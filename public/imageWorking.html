@@ -119,6 +119,22 @@
             background: #3831bf;
         }
 
+        #btn-logout {
+            background-color: rgb(255, 9, 9);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
         footer {
             margin-top: 40px;
             font-size: 14px;
@@ -131,7 +147,8 @@
     <header>
         <h1 class="headIcon"><a href="/home">Share-Here</a></h1>
         <div class="header-buttons">
-            <!-- to added this is needed -->
+            <button><a href="/myfiles">My Files</a></button>
+            <a id="btn-logout" href="/logout">Logout</a>
         </div>
     </header>
 
@@ -155,33 +172,38 @@
             alert("please login first !!");
             window.location.href = "/login";
         }
-        const form = document.getElementById('form');
-        form.addEventListener('submit', submitForm);
+        try {
+            const form = document.getElementById('form');
+            form.addEventListener('submit', submitForm);
 
-        async function submitForm(e) {
-            e.preventDefault();
-            const files = document.getElementById("files");
-            const formData = new FormData();
+            async function submitForm(e) {
+                e.preventDefault();
+                const files = document.getElementById("files");
+                const formData = new FormData();
 
-            for (let i = 0; i < files.files.length; i++) {
-                formData.append("files", files.files[i])
+                for (let i = 0; i < files.files.length; i++) {
+                    formData.append("files", files.files[i])
+                }
+                const res = await fetch("/api/uploadImg", {
+                    method: 'POST',
+                    body: formData,
+                    headers: { "Authorization": "Bearer " + token }
+                })
+                const data = await res.json()
+                // console.log(data)
+                if (data.success) {
+                    // if the things go good then this will happen
+                    alert(data.message);
+                    console.log(data.message)
+                } else {
+                    // else this error alter with the message
+                    alert(data.error)
+                    console.log(data.error)
+                }
             }
-            const res = await fetch("/api/uploadImg", {
-                method: 'POST',
-                body: formData,
-                headers: { "Authorization": "Bearer " + token }
-            })
-            const data = await res.json()
-            // console.log(data)
-            if (data.success) {
-                // if the things go good then this will happen
-                alert(data.message);
-                console.log(data.message)
-            } else {
-                // else this error alter with the message
-                alert(data.error)
-                console.log(data.error)
-            }
+        } catch (error) {
+            alert("Server Error", error.message)
+            console.log(error)
         }
     }
     imageProcessing()

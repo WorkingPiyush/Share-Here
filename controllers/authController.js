@@ -93,7 +93,7 @@ const login = async (req, res) => {
         }
     });
 }
-
+// registered user also can logout..
 const logout = async (req, res) => {
     const authHeader = req.header('Authorization');
     if (!authHeader) return res.json({ message: "Token is missing !!" })
@@ -111,7 +111,7 @@ const logout = async (req, res) => {
             if (err) {
                 res.json({ message: 'Database error', error: err.message })
             }
-            res.json({ message: "Logout Successfully !!", result1 })
+            res.json({ message: "Logout Successfully !!" })
         })
     } catch (error) {
         res.status(500).json({ message: "Something went wrong" });
