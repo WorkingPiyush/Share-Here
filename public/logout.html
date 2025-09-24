@@ -62,19 +62,19 @@
 
     <script>
         document.getElementById("logoutBtn").addEventListener("click", async () => {
-            // console.log("lOGOUT HO GAYA KYA ")
             const token = localStorage.getItem("token");
             const res = await fetch('/users/logout', {
                 method: "GET",
                 headers: { Authorization: "Bearer " + token }
             })
+
             const data = await res.json();
             if (data) {
                 console.log(data.message)
                 localStorage.removeItem("token");
                 window.location.href = "/";
             } else {
-                window.alert("Some error occurred at server.Please try again!!!")
+                window.alert("Some error occurred at server. Please try again!!!")
                 console.log(data.message)
             }
         });

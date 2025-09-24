@@ -1,4 +1,4 @@
-// For throwing the error to the client side if wrong file uploaded on the wrong route..
+// it will collect the error given by the multer's file filter and then it will be served to the frontend
 const handleUploadError = (mw) => {
     return (req, res, next) => {
         mw(req, res, (err) => {

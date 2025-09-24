@@ -117,7 +117,7 @@
 
     <div class="upload-container">
         <form id="form" action="/api/uploadDoc" method="post" enctype="multipart/form-data">
-            <input type="file" id="files" name="file" required multiple>
+            <input type="file" id="files" name="file" required multiple >
             <br>
             <input type="submit" value="Upload Documents">
         </form>
@@ -151,7 +151,6 @@
                 headers: { "Authorization": "Bearer " + token, }
             })
             const data = await res.json()
-            // console.log(data)
             if (data.success) {
                 // if the things go good then this will happen
                 alert(data.message);

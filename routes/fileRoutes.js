@@ -22,8 +22,11 @@ router.post('/uploadImg', checkUser,expTokenMW, handleUploadError(imgMiddleware.
 // for videos only
 router.post('/uploadVdo', checkUser,expTokenMW, handleUploadError(VdoMiddleware.array('files')), uploadFile)
 
+// for user's file
 router.get('/getFiles', checkUser,expTokenMW, userFiles)
+// for files download
 router.get('/downloadFiles/:id', downloadFiles)
+// for deleting the file of the user
 router.delete('/delete/:id',expTokenMW, checkUser, deleteFile)
 
 module.exports = router;
