@@ -26,6 +26,7 @@ app.use("/login", express.static(path.join(__dirname, 'public', '/login.html')))
 app.use("/documents", express.static(path.join(__dirname, 'public', '/docWorking.html')))
 app.use("/videos", express.static(path.join(__dirname, 'public', '/videoWorking.html')))
 app.use("/myfiles", express.static(path.join(__dirname, 'public', '/fileDashboard.html')))
+app.use("/copy", express.static(path.join(__dirname, 'public', '/sharingTable.html')))
 app.use("/logout", express.static(path.join(__dirname, 'public', '/logout.html')))
 
 // file working route

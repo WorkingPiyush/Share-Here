@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Sharing - Share-Here</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f9fc;
+            color: #333;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: #fff;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 24px;
+            width: 90%;
+            max-width: 360px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 20px;
+        }
+
+        p {
+            margin: 0 0 16px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        input[type="submit"],
+        button {
+            width: 65%;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 08px;
+        }
+
+        input[type="submit"] {
+            background: #3b82f6;
+            color: #fff;
+        }
+
+        #linkContainer {
+            width: 80%;
+            margin-top: 12px;
+            margin-left: 20px;
+            margin-bottom: 25px;
+            padding: 10px 14px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background: #f1f5f9;
+            color: #333;
+            font-size: 14px;
+            word-break: break-all;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        #linkContainer:hover {
+            background: #e2e8f0;
+            border-color: #999;
+        }
+
+
+        button {
+            background: #f1f5f9;
+            color: #333;
+        }
+
+        #message {
+            margin-top: 8px;
+            font-size: 13px;
+            color: green;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Add a Secret Key</h1>
+        <p>(For more security)</p>
+
+        <form id="secretForm">
+            <input id="secret" type="text" placeholder="Enter secret key (optional)" />
+            <input type="submit" value="Add" />
+            <p>or</p>
+            <div id="linkContainer">The final will display here</div>
+            <button type="button" id="copyBtn">Copy Link</button>
+        </form>
+
+        <div id="message"></div>
+    </div>
+
+    <script>
+        const secretInput = document.getElementById("secret");
+        const copyBtn = document.getElementById("copyBtn");
+        const form = document.getElementById("secretForm");
+        const messageBox = document.getElementById("message");
+
+        function generateLink(secret) {
+            return secret
+                ? `https://share-here.example/s/abc123?key=${encodeURIComponent(secret)}`
+                : "https://share-here.example/s/abc123";
+        }
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const secret = secretInput.value.trim();
+            const link = generateLink(secret);
+            navigator.clipboard.writeText(link);
+            messageBox.textContent = "Link with secret generated & copied!";
+        });
+
+        copyBtn.addEventListener("click", async () => {
+            const secret = secretInput.value.trim();
+            const link = generateLink(secret);
+            try {
+                await navigator.clipboard.writeText(link);
+                messageBox.textContent = "Link copied!";
+            } catch {
+                messageBox.textContent = "Copy failed!";
+            }
+        });
+    </script>
+</body>
+
+</html>

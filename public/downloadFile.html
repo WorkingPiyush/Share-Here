@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Enter Secret Key - Share-Here</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f9fc;
+      color: #333;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 30px 20px;
+      width: 90%;
+      max-width: 380px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+      margin-bottom: 12px;
+      font-size: 22px;
+    }
+
+    p {
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    input[type="text"] {
+      width: 90%;
+      padding: 10px 12px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
+
+    input[type="submit"] {
+      width: 90%;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      background: #3b82f6;
+      color: #fff;
+    }
+
+    #message {
+      margin-top: 12px;
+      font-size: 13px;
+      color: red;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Enter Secret Key</h1>
+    <p>To download your file, please provide the secret key</p>
+
+    <!-- Form to submit the secret key -->
+    <form id="secretForm">
+      <input type="text" id="secret" name="key" placeholder="Enter secret key" required>
+      <input type="submit" value="Download File">
+    </form>
+
+    <div id="message"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById("secretForm");
+    const secretInput = document.getElementById("secret");
+    const messageBox = document.getElementById("message");
+
+    // Replace with dynamic file ID from URL or backend
+    const fileId = new URLSearchParams(window.location.search).get("fileId") || "123";
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const key = secretInput.value.trim();
+
+      if (!key) {
+        messageBox.textContent = "Please enter the secret key.";
+        return;
+      }
+
+      // Redirect to download route with key
+      window.location.href = `/downloadFiles/${fileId}/download?key=${encodeURIComponent(key)}`;
+    });
+  </script>
+</body>
+
+</html>

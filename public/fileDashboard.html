@@ -41,7 +41,7 @@
         }
 
         .container {
-            max-width: 1070px;
+            max-width: 1160px;
             margin: 30px auto;
             background: white;
             border-radius: 12px;
@@ -159,6 +159,7 @@
                     <th>File Name</th>
                     <th>Size</th>
                     <th>Type</th>
+                    <th>Download Count</th>
                     <th>Uploaded On</th>
                     <th>Actions</th>
                 </tr>
@@ -168,8 +169,6 @@
             </tbody>
         </table>
     </div>
-
-    <div class="copy-toast" id="copyToast">✅ Link Copied!</div>
 
     <script>
         const token = localStorage.getItem("token");
@@ -220,25 +219,14 @@
             <td>${file.filename}</td>
             <td>${fileSize(file.size)}</td>
             <td>${file.type.split('/')[1].toUpperCase()}</td>
+            <td>${file.download_count}</td>
             <td>${new Date(file.uploaded_at).toLocaleString()}</td>
             <td class="file-actions">
             <a href = "${downloadLink}" ><button class="btn-download">Download</button></a>
             <button class="btn-delete" onclick="deleteWork(${file.id})">Delete</button>
-            <button class="btn-copy" data-link = "http://localhost:2001${downloadLink}">CopyLink</button>
+            <a href = "/copy" ><button class="btn-copy">Copy Link</button></a>
             </td>`;
                         Tablebody.appendChild(rowEntries);
-
-
-                        const toast = document.getElementById("copyToast");
-                        document.addEventListener("click", (e) => {
-                            if (e.target.classList.contains("btn-copy")) {
-                                const link = e.target.getAttribute("data-link");
-                                navigator.clipboard.writeText(link).then(() => {
-                                    toast.style.display = "block";
-                                    setTimeout(() => toast.style.display = "none", 2000)
-                                })
-                            }
-                        })
                     }
                 } catch (error) {
                     console.log(error)
