@@ -13,10 +13,10 @@ app.use(express.urlencoded({ extended: true }));
 
 
 
-app.get('/', (req, res) => {
-    // setting up the landing page for the user
-    res.sendFile(__dirname + '/public/landingHomePage.html')
-})
+// setting up the landing page for the user
+app.get('/', (req, res) => { res.sendFile(__dirname + '/public/landingHomePage.html') })
+// something
+app.get('/copy/:id', (req, res) => { res.sendFile(__dirname + '/public/sharingTable.html') })
 
 // working on the routes 
 app.use("/home", express.static(path.join(__dirname, 'public', '/homePage.html')))
@@ -26,7 +26,6 @@ app.use("/login", express.static(path.join(__dirname, 'public', '/login.html')))
 app.use("/documents", express.static(path.join(__dirname, 'public', '/docWorking.html')))
 app.use("/videos", express.static(path.join(__dirname, 'public', '/videoWorking.html')))
 app.use("/myfiles", express.static(path.join(__dirname, 'public', '/fileDashboard.html')))
-app.use("/copy", express.static(path.join(__dirname, 'public', '/sharingTable.html')))
 app.use("/logout", express.static(path.join(__dirname, 'public', '/logout.html')))
 
 // file working route

@@ -68,7 +68,6 @@ const userFiles = (req, res) => {
 
 const downloadFiles = (req, res) => {
     // file id for download
-    const secretKey = req.params
     const fileId = req.params.id;
     const query2 = ("SELECT * FROM Userfiles WHERE id = ?");
     db.query(query2, [fileId], (err, result2) => {
@@ -125,10 +124,31 @@ const deleteFile = (req, res) => {
 
 }
 
-
+const addSecretKey = (req, res) => {
+    const fileID = req.params.id;
+    const secretKey = req.body;
+    try {
+        if (secretKey) {
+            const query1 = `UPDATE Userfiles SET secret_key = ? WHERE id = ?`;
+            const value1 = [secretKey, fileID]
+            db.query(query1, value1, (err, result1) => {
+                if (err) {
+                    return res.status(500).json({ message: "DB Error", err })
+                }
+                if (result1.length === 0) {
+                    return res.status(404).json({ message: "File Not Found" })
+                }
+                res.json({ message: "Secret Key Added", result1 })
+            })
+        }
+    } catch (error) {
+        res.status(400).json({ message: "Error", err: error });
+    }
+}
 module.exports = {
     uploadFile,
     userFiles,
     downloadFiles,
-    deleteFile
+    deleteFile,
+    addSecretKey
 };
