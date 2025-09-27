@@ -126,9 +126,10 @@ const deleteFile = (req, res) => {
 
 const addSecretKey = (req, res) => {
     const fileID = req.params.id;
-    const secretKey = req.body;
+    const { secretKey } = req.body;
     try {
         if (secretKey) {
+            console.log("secretKey", secretKey)
             const query1 = `UPDATE Userfiles SET secret_key = ? WHERE id = ?`;
             const value1 = [secretKey, fileID]
             db.query(query1, value1, (err, result1) => {
@@ -138,7 +139,7 @@ const addSecretKey = (req, res) => {
                 if (result1.length === 0) {
                     return res.status(404).json({ message: "File Not Found" })
                 }
-                res.json({ message: "Secret Key Added", result1 })
+                res.json({ message: "Secret Key Added"})
             })
         }
     } catch (error) {

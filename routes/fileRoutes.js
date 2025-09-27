@@ -28,6 +28,6 @@ router.get('/getFiles', checkUser, expTokenMW, userFiles)
 router.get('/downloadFiles/:id', downloadFiles)
 // for deleting the file of the user
 router.delete('/delete/:id', expTokenMW, checkUser, deleteFile)
-router.get('/copy/:id', expTokenMW, checkUser, addSecretKey)
+router.post('/copy/:id', addSecretKey)
 
 module.exports = router;

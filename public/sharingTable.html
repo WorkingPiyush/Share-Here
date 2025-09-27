@@ -118,35 +118,61 @@
     </div>
 
     <script>
-        const secretInput = document.getElementById("secret");
-        const copyBtn = document.getElementById("copyBtn");
-        const form = document.getElementById("secretForm");
-        const messageBox = document.getElementById("message");
-
-        function generateLink(secret) {
-            return secret
-                ? `https://share-here.example/s/abc123?key=${encodeURIComponent(secret)}`
-                : "https://share-here.example/s/abc123";
-        }
-
-        form.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const secret = secretInput.value.trim();
-            const link = generateLink(secret);
-            navigator.clipboard.writeText(link);
-            messageBox.textContent = "Link with secret generated & copied!";
-        });
-
-        copyBtn.addEventListener("click", async () => {
-            const secret = secretInput.value.trim();
-            const link = generateLink(secret);
-            try {
-                await navigator.clipboard.writeText(link);
-                messageBox.textContent = "Link copied!";
-            } catch {
-                messageBox.textContent = "Copy failed!";
+        function sharingTab() {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.log("please login first !!");
+                alert("please login first !!");
+                window.location.href = "/login";
             }
-        });
+            let base_path = `http://localhost:2001/api/downloadFiles/`
+            const fileID = window.location.pathname.split('/')[2]
+            const secretInput = document.getElementById("secret");
+            const copyBtn = document.getElementById("copyBtn");
+            const form = document.getElementById("secretForm");
+            const messageBox = document.getElementById("message");
+            const linkBox = document.getElementById("linkContainer");
+            linkBox.innerText = `${base_path}${fileID}`
+
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const secretKey = secretInput.value.trim();
+
+                const res = await fetch(`/api/copy/${fileID}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ secretKey }),
+                })
+                const data = await res.json();
+                if (data.success) {
+                    alert("Secret Key Added")
+                    alert("also share this key with file link for accessing file")
+                    secretInput.value = ""
+                } else {
+                    console.log(err)
+                }
+
+
+                const link = `${base_path}${fileID}`
+                console.log(link)
+                navigator.clipboard.writeText(link).then(() => {
+                    messageBox.textContent = "Link with secret generated & copied!";
+                }).catch((err) => {
+                    console.error("Failed to copy: ", err);
+                });;
+
+            });
+
+            copyBtn.addEventListener("click", async () => {
+                const link = `${base_path}${fileID}`
+                navigator.clipboard.writeText(link).then(() => {
+                    messageBox.textContent = "Link copied!";
+                }).catch((err) => {
+                    console.error("Failed to copy: ", err);
+                });;
+            });
+        }
+        sharingTab()
     </script>
 </body>
 

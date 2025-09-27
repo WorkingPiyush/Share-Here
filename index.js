@@ -27,6 +27,7 @@ app.use("/documents", express.static(path.join(__dirname, 'public', '/docWorking
 app.use("/videos", express.static(path.join(__dirname, 'public', '/videoWorking.html')))
 app.use("/myfiles", express.static(path.join(__dirname, 'public', '/fileDashboard.html')))
 app.use("/logout", express.static(path.join(__dirname, 'public', '/logout.html')))
+app.use("/verify", express.static(path.join(__dirname, 'public', '/downloadFile.html')))
 
 // file working route
 const fileRoutes = require('./routes/fileRoutes.js')
