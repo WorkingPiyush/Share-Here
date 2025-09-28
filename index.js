@@ -17,6 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/', (req, res) => { res.sendFile(__dirname + '/public/landingHomePage.html') })
 // something
 app.get('/copy/:id', (req, res) => { res.sendFile(__dirname + '/public/sharingTable.html') })
+app.get('/verify/:id', (req, res) => { res.sendFile(__dirname + '/public/downloadFile.html') })
 
 // working on the routes 
 app.use("/home", express.static(path.join(__dirname, 'public', '/homePage.html')))
@@ -27,7 +28,6 @@ app.use("/documents", express.static(path.join(__dirname, 'public', '/docWorking
 app.use("/videos", express.static(path.join(__dirname, 'public', '/videoWorking.html')))
 app.use("/myfiles", express.static(path.join(__dirname, 'public', '/fileDashboard.html')))
 app.use("/logout", express.static(path.join(__dirname, 'public', '/logout.html')))
-app.use("/verify", express.static(path.join(__dirname, 'public', '/downloadFile.html')))
 
 // file working route
 const fileRoutes = require('./routes/fileRoutes.js')

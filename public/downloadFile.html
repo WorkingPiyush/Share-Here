@@ -39,7 +39,7 @@
       color: #666;
     }
 
-    input[type="text"] {
+    input[type="password"] {
       width: 90%;
       padding: 10px 12px;
       font-size: 14px;
@@ -75,7 +75,7 @@
 
     <!-- Form to submit the secret key -->
     <form id="secretForm">
-      <input type="text" id="secret" name="key" placeholder="Enter secret key" required>
+      <input type="password" id="secret" name="key" placeholder="Enter secret key" required>
       <input type="submit" value="Download File">
     </form>
 
@@ -83,25 +83,26 @@
   </div>
 
   <script>
-    const form = document.getElementById("secretForm");
-    const secretInput = document.getElementById("secret");
-    const messageBox = document.getElementById("message");
+    async function submitDownload() {
 
-    // Replace with dynamic file ID from URL or backend
-    const fileId = new URLSearchParams(window.location.search).get("fileId") || "123";
+      const form = document.getElementById("secretForm");
+      const secretInput = document.getElementById("secret");
+      const messageBox = document.getElementById("message");
+      const fileID = window.location.pathname.split('/')[2]
 
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const key = secretInput.value.trim();
 
-      if (!key) {
-        messageBox.textContent = "Please enter the secret key.";
-        return;
-      }
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const key = secretInput.value.trim();
 
-      // Redirect to download route with key
-      window.location.href = `/downloadFiles/${fileId}/download?key=${encodeURIComponent(key)}`;
-    });
+        if (!key) {
+          messageBox.textContent = "Please enter the secret key.";
+          return;
+        }
+          window.location.href = `/api/download/${fileID}?key=${encodeURIComponent(key)}`;
+      });
+    }
+    submitDownload()
   </script>
 </body>
 

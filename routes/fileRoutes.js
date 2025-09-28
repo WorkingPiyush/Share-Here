@@ -5,6 +5,7 @@ const checkUser = require('../middleware/checkUserMiddleware.js');
 const path = require('path');
 const expTokenMW = require('../middleware/expTokenMiddleware.js')
 const handleUploadError = require('../middleware/fileErrorMiddleware.js');
+const validatKey = require('../middleware/secretKeyMiddleware.js')
 const { uploadFile, userFiles, downloadFiles, deleteFile, addSecretKey } = require('../controllers/fileController');
 const router = express.Router();
 const { docStorage, docFilter, imgStorage, imgFilter, Vdostorage, VdoFilter } = require('../storageSetup.js')
@@ -24,10 +25,17 @@ router.post('/uploadVdo', checkUser, expTokenMW, handleUploadError(VdoMiddleware
 
 // for user's file
 router.get('/getFiles', checkUser, expTokenMW, userFiles)
-// for files download
-router.get('/downloadFiles/:id', downloadFiles)
+
+// for files download with secret keys
+router.get('/downloadFiles/:id', validatKey, downloadFiles)
+
+// for files download without any secret keys
+router.get('/download/:id', downloadFiles)
+
 // for deleting the file of the user
 router.delete('/delete/:id', expTokenMW, checkUser, deleteFile)
+
+// adding the secret keys in the DB for each file
 router.post('/copy/:id', addSecretKey)
 
 module.exports = router;

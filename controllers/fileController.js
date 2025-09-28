@@ -66,43 +66,56 @@ const userFiles = (req, res) => {
     }
 }
 
-const downloadFiles = (req, res) => {
-    // file id for download
+const downloadFiles = async (req, res) => {
+    // file id and secretKey for download
     const fileId = req.params.id;
-    const query2 = ("SELECT * FROM Userfiles WHERE id = ?");
-    db.query(query2, [fileId], (err, result2) => {
-        if (err) {
-            return res.status(500).json({ message: "DB Error", err })
-        }
-        if (result2.length === 0) {
-            return res.status(404).json({ message: "File Not Found" })
-        }
-        const file = result2[0];
-        // for now the final path where all the files are stored
-        const filepath = path.resolve(process.env.BASE_PATH, file.filepath)
-        // console.log("BASE_PATH",process.env.BASE_PATH)
-        // console.log("file.filepath",file.filepath)
-        // checking file existence
-        if (!fs.existsSync(filepath)) {
-            console.error("File not found at:", filepath);
-            return res.status(404).send("File not found on server");
-        }
-        const query3 = ("UPDATE Userfiles SET download_count = download_count + 1 WHERE id = ?");
-        db.query(query3, [fileId], (err, result3) => {
+    const key = req.query.key;
+    // console.log(fileId)
+    // console.log(key)
+    try {
+        const query2 = ("SELECT * FROM Userfiles WHERE id = ?");
+        db.query(query2, [fileId], async (err, result2) => {
             if (err) {
                 return res.status(500).json({ message: "DB Error", err })
             }
-            if (result3.affectedRows === 0) {
+            if (result2.length === 0) {
                 return res.status(404).json({ message: "File Not Found" })
             }
-        })
-        res.download(filepath, file.filename, (err) => {
-            if (err) {
-                console.error("Download error:", err.message);
+            const file = result2[0];
+            // check wether the key exists or not in DB.
+            if (file.secret_key) {
+                if (file.secret_key !== key) {
+                    return res.status(401).json({ message: "Your Secret Key is wrong. Please enter right one !!" })
+                }
+            }
+            // for now the final path where all the files are stored
+            const filepath = path.resolve(process.env.BASE_PATH, file.filepath)
+            // console.log("BASE_PATH",process.env.BASE_PATH)
+            // console.log("file.filepath",file.filepath)
+            // checking file existence
+            if (!fs.existsSync(filepath)) {
+                console.error("File not found at:", filepath);
                 return res.status(404).send("File not found on server");
             }
+            const query3 = ("UPDATE Userfiles SET download_count = download_count + 1 WHERE id = ?");
+            db.query(query3, [fileId], (err, result3) => {
+                if (err) {
+                    return res.status(500).json({ message: "DB Error", err })
+                }
+                if (result3.affectedRows === 0) {
+                    return res.status(404).json({ message: "File Not Found" })
+                }
+            })
+            res.download(filepath, file.filename, (err) => {
+                if (err) {
+                    console.error("Download error:", err.message);
+                    return res.status(404).send("File not found on server");
+                }
+            })
         })
-    })
+    } catch (error) {
+        console.log("error", error)
+    }
 }
 
 const deleteFile = (req, res) => {
@@ -139,7 +152,7 @@ const addSecretKey = (req, res) => {
                 if (result1.length === 0) {
                     return res.status(404).json({ message: "File Not Found" })
                 }
-                res.json({ message: "Secret Key Added"})
+                res.json({ success: true, message: "Secret Key Added" })
             })
         }
     } catch (error) {
