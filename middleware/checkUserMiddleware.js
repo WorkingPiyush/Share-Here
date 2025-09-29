@@ -12,7 +12,9 @@ const checkUser = async (req, res, next) => {
         const exptime = decoded.exp * 1000
         const exp = new Date(exptime).toLocaleTimeString()
         const currentDate = new Date(Date.now()).toLocaleTimeString()
-        if (exp < currentDate) {
+        // console.log("currentDate", currentDate)
+        // console.log("exp", exp)
+        if (exp > currentDate) {
             return res.status(401).json({ message: "Your Session is expired please login again !!" })
         }
         if (decoded) {

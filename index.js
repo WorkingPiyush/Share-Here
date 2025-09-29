@@ -3,6 +3,7 @@ const app = express();
 const dotenv = require('dotenv').config();
 const path = require('path');
 const PORT = process.env.PORT || 2001;
+const rateLimit = require('express-rate-limit');
 const db = require('./config/connectDB.js')
 
 
@@ -10,6 +11,15 @@ app.use(express.static(__dirname + '/public'))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
+const limits = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 15,
+    message: {
+        status: "error",
+        message: "Too many requests from this IP, please try again later."
+    }
+})
 
 
 
@@ -31,7 +41,7 @@ app.use("/logout", express.static(path.join(__dirname, 'public', '/logout.html')
 
 // file working route
 const fileRoutes = require('./routes/fileRoutes.js')
-app.use('/api/', fileRoutes)
+app.use('/api/', limits, fileRoutes)
 // auth working route
 const authRoutes = require('./routes/authRoutes.js')
 app.use('/users/', authRoutes)
