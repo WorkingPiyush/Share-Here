@@ -14,7 +14,7 @@ const checkUser = async (req, res, next) => {
         const currentDate = new Date(Date.now()).toLocaleTimeString()
         // console.log("currentDate", currentDate)
         // console.log("exp", exp)
-        if (exp > currentDate) {
+        if (exp < currentDate) {
             return res.status(401).json({ message: "Your Session is expired please login again !!" })
         }
         if (decoded) {
